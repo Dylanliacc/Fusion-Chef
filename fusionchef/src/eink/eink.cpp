@@ -9,22 +9,23 @@
 #include "eink.h"
 
 
-// 选择正确的墨水屏型号
-GxEPD2_BW<GxEPD2_420_GDEY042T81, GxEPD2_420_GDEY042T81::HEIGHT> display(GxEPD2_420_GDEY042T81(/*CS=D1*/ 2, /*DC=D3*/4 , /*RST=D0*/ 1, /*BUSY=D2*/ 3));  // 4.2黑白   GDEY042T81   300*400, SSD1608 (IL3820)
+GxEPD2_BW<GxEPD2_420_GDEY042T81, GxEPD2_420_GDEY042T81::HEIGHT> 
+display(GxEPD2_420_GDEY042T81(/*CS=D1*/ EPD_CS, /*DC=D3*/EPD_DC, /*RST=D0*/ EPD_RST, /*BUSY=D2*/ EPD_BUSY));  // 4.2黑白   GDEY042T81   300*400, SSD1608 (IL3820)
+
 U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 void eink_setup(){
-  SPI.end();                // release standard SPI pins, e.g. SCK(18), MISO(19), MOSI(23), SS(5)
-  SPI.begin();  // map and init SPI pins SCK(7 D8), MISO(8   D9), MOSI(9   D10), 
+  SPI.end();                
+  SPI.begin();  // use VSPI
 
   pinMode(20, OUTPUT);
   digitalWrite(20, HIGH);
 
   display.init(115200, true, 2, false);
-  display.setRotation(0);  // 0 是横向
+  display.setRotation(0);  // 0  is horz
   u8g2Fonts.begin(display);
   u8g2Fonts.setFontDirection(0);
-  u8g2Fonts.setForegroundColor(GxEPD_BLACK);  // 设置前景色
-  u8g2Fonts.setBackgroundColor(GxEPD_WHITE);  // 设置背景色
+  u8g2Fonts.setForegroundColor(GxEPD_BLACK);  
+  u8g2Fonts.setBackgroundColor(GxEPD_WHITE);  
 
 
     // Display the startup image
@@ -33,7 +34,6 @@ void eink_setup(){
   do{
   display.drawBitmap(0, 0, gImage_01, 400, 300, GxEPD_BLACK);  // Draw the image at (0,0)
   }while( display.nextPage()) ;// Perform a full refresh to show the image)
- 
   delay(5000);  // Wait 3 seconds to let the user view the image
 
   
