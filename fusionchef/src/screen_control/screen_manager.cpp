@@ -12,34 +12,57 @@ void ScreenManager::init() {
 }
 
 void ScreenManager::nextScreen() {
-    currentScreen = (currentScreen + 1) % 6;  // Now 6 screens total
+    currentScreen = (currentScreen + 1) % TOTAL_SCREENS;
+    currentSubPage = 0; // Reset subpage when switching screens
+    updateTotalSubPages();
     switchScreen(currentScreen);
 }
 
 void ScreenManager::previousScreen() {
-    currentScreen = (currentScreen - 1 + 6) % 6;  // Now 6 screens total
+    currentScreen = (currentScreen - 1 + TOTAL_SCREENS) % TOTAL_SCREENS;
+    currentSubPage = 0; // Reset subpage when switching screens
+    updateTotalSubPages();
     switchScreen(currentScreen);
+}
+
+void ScreenManager::nextSubPage() {
+    if (currentSubPage < totalSubPages - 1) {
+        currentSubPage++;
+        switchScreen(currentScreen);
+    }
+}
+
+void ScreenManager::previousSubPage() {
+    if (currentSubPage > 0) {
+        currentSubPage--;
+        switchScreen(currentScreen);
+    }
+}
+
+void ScreenManager::updateTotalSubPages() {
+    switch (currentScreen) {
+        case 3: // LongText page
+            totalSubPages = 3; // Example: 3 subpages for long text
+            break;
+        default:
+            totalSubPages = 1;
+            break;
+    }
 }
 
 void ScreenManager::switchScreen(int screen) {
     switch (screen) {
         case 0:
-            drawChart();
-            break;
-        case 1:
-            drawCoordinatesExplanation();
-            break;
-        case 2:
-            drawSplitScreen();
-            break;
-        case 3:
             drawWeatherPage();
             break;
-        case 4:
+        case 1:
             drawCalendarPage();
             break;
-        case 5:
+        case 2:
             drawWifiInfoPage();
+            break;
+        case 3:
+            drawLongTextPage(currentSubPage);
             break;
         default:
             break;

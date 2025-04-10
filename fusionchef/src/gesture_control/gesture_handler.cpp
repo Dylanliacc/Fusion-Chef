@@ -57,9 +57,11 @@ void GestureHandler::handleDirectionalGesture(paj7620_gesture_t direction) {
         switch (direction) {
             case UP:
                 Serial.println("Up");
+                ScreenManager::getInstance().previousSubPage();
                 break;
             case DOWN:
                 Serial.println("Down");
+                ScreenManager::getInstance().nextSubPage();
                 break;
             case LEFT:
                 Serial.println("Left");

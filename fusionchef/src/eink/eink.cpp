@@ -31,6 +31,7 @@ void eink_setup(){
     // Display the startup image
   display.fillScreen(GxEPD_WHITE);  // Clear the screen to white
   display.firstPage();
+  display.setTextWrap(true);
   do{
   display.drawBitmap(0, 0, gImage_01, 400, 300, GxEPD_BLACK);  // Draw the image at (0,0)
   }while( display.nextPage()) ;// Perform a full refresh to show the image)
@@ -39,7 +40,9 @@ void eink_setup(){
   
   u8g2Fonts.setFontMode(1);
   u8g2Fonts.setFont(u8g2_font_wqy12_t_gb2312);
+#if defined(TEST_SCREEN)
   drawChart();
+#endif
 }
 
 
@@ -60,6 +63,7 @@ int calculateBezierPoint(int p0, int p1, int p2, int p3, float t) {
 }
 
 
+#ifdef TEST_SCREEN
 void drawChart() {
   display.fillScreen(GxEPD_WHITE);  // 清空屏幕
   display.setTextColor(GxEPD_BLACK);
@@ -185,3 +189,5 @@ void drawSplitScreen() {
 
   display.nextPage();  // 刷新显示
 }
+
+#endif

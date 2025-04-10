@@ -8,6 +8,12 @@
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "../variant/seeed_xiao_esp32s3.h"
 
+// Display dimensions
+#define DISPLAY_HEIGHT 300
+#define DISPLAY_WIDTH 400
+#define LINE_HEIGHT 20
+#define LINES_PER_PAGE 12
+
 void eink_setup();
 void drawChart();
 void drawCoordinatesExplanation();
@@ -17,5 +23,6 @@ int calculateBezierPoint(int p0, int p1, int p2, int p3, float t);
 void drawWeatherPage();
 void drawCalendarPage();
 void drawWifiInfoPage();
+void drawLongTextPage(int subPage);
 
 #endif
