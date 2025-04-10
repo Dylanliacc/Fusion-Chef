@@ -19,6 +19,9 @@ private:
     WifiManager() {}
     WifiManager(const WifiManager&) = delete;
     WifiManager& operator=(const WifiManager&) = delete;
+
+    bool tryConnectWithSavedCredentials();
+    bool startSmartConfig();
 };
 
 #endif // WIFI_MANAGER_H
