@@ -12,12 +12,12 @@ void ScreenManager::init() {
 }
 
 void ScreenManager::nextScreen() {
-    currentScreen = (currentScreen + 1) % 3;
+    currentScreen = (currentScreen + 1) % 6;  // Now 6 screens total
     switchScreen(currentScreen);
 }
 
 void ScreenManager::previousScreen() {
-    currentScreen = (currentScreen - 1 + 3) % 3;
+    currentScreen = (currentScreen - 1 + 6) % 6;  // Now 6 screens total
     switchScreen(currentScreen);
 }
 
@@ -31,6 +31,15 @@ void ScreenManager::switchScreen(int screen) {
             break;
         case 2:
             drawSplitScreen();
+            break;
+        case 3:
+            drawWeatherPage();
+            break;
+        case 4:
+            drawCalendarPage();
+            break;
+        case 5:
+            drawWifiInfoPage();
             break;
         default:
             break;

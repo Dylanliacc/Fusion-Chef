@@ -8,13 +8,14 @@
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "../variant/seeed_xiao_esp32s3.h"
 
-
-
-
 void eink_setup();
 void drawChart();
 void drawCoordinatesExplanation();
 void drawSplitScreen();
 int calculateBezierPoint(int p0, int p1, int p2, int p3, float t);
+
+void drawWeatherPage();
+void drawCalendarPage();
+void drawWifiInfoPage();
 
 #endif

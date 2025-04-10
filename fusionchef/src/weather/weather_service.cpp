@@ -1,5 +1,6 @@
 #include "weather_service.h"
 #include "../network/wifi_manager.h"
+#include <time.h>
 
 void WeatherService::startWeatherTask() {
     xTaskCreate(
@@ -25,41 +26,44 @@ void WeatherService::weatherTask(void * parameter) {
             String url = String("http://") + instance.OPENWEATHER_HOST + "/data/2.5/weather?q=" + 
                         instance.CITY + "&appid=" + instance.OPENWEATHER_API_KEY + "&units=metric";
             
-            Serial.println("[Weather] Connecting to OpenWeather API...");
             http.begin(url);
             int httpCode = http.GET();
-            
-            Serial.printf("[Weather] HTTP Response code: %d\n", httpCode);
             
             if(httpCode > 0) {
                 if(httpCode == HTTP_CODE_OK) {
                     String payload = http.getString();
-                    Serial.println("[Weather] Data received successfully");
                     
                     StaticJsonDocument<1024> doc;
                     DeserializationError error = deserializeJson(doc, payload);
                     
                     if (!error) {
-                        float temp = doc["main"]["temp"];
-                        float humidity = doc["main"]["humidity"];
-                        const char* description = doc["weather"][0]["description"];
+                        // Get current time for update timestamp
+                        time_t now;
+                        struct tm timeinfo;
+                        time(&now);
+                        localtime_r(&now, &timeinfo);
+                        char timeStr[9];
+                        sprintf(timeStr, "%02d:%02d:%02d", 
+                                timeinfo.tm_hour,
+                                timeinfo.tm_min,
+                                timeinfo.tm_sec);
                         
-                        Serial.println("[Weather] Data parsed successfully:");
-                        Serial.printf("[Weather] Temperature: %.1f°C\n", temp);
-                        Serial.printf("[Weather] Humidity: %.1f%%\n", humidity);
-                        Serial.printf("[Weather] Description: %s\n", description);
-                    } else {
-                        Serial.printf("[Weather] JSON parsing failed: %s\n", error.c_str());
+                        // Update the weather data
+                        instance.currentWeather.temperature = doc["main"]["temp"];
+                        instance.currentWeather.humidity = doc["main"]["humidity"];
+                        instance.currentWeather.description = doc["weather"][0]["description"].as<const char*>();
+                        instance.currentWeather.city = instance.CITY;
+                        instance.currentWeather.updateTime = String(timeStr);
+                        
+                        Serial.printf("[Weather] Updated: %s, %.1f°C, %s\n", 
+                            instance.currentWeather.city.c_str(),
+                            instance.currentWeather.temperature,
+                            instance.currentWeather.description.c_str());
                     }
-                } else {
-                    Serial.printf("[Weather] HTTP Error: %s\n", http.errorToString(httpCode).c_str());
                 }
-            } else {
-                Serial.printf("[Weather] Failed to connect to server. Error: %s\n", http.errorToString(httpCode).c_str());
             }
             http.end();
         }
-        Serial.printf("[Weather] Next update in %d seconds\n", instance.WEATHER_UPDATE_INTERVAL/1000);
         vTaskDelay(instance.WEATHER_UPDATE_INTERVAL / portTICK_PERIOD_MS);
     }
 }
