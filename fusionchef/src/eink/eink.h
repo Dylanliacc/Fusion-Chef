@@ -13,6 +13,7 @@
 #define DISPLAY_WIDTH 400
 #define LINE_HEIGHT 20
 #define LINES_PER_PAGE 12
+#define MAX_CHARS_PER_PAGE 500  // Maximum characters that can fit on one page
 
 void eink_setup();
 void drawChart();
@@ -23,6 +24,6 @@ int calculateBezierPoint(int p0, int p1, int p2, int p3, float t);
 void drawWeatherPage();
 void drawCalendarPage();
 void drawWifiInfoPage();
-void drawLongTextPage(int subPage);
+void drawLongTextPage(const String& content, const String& title, int parentPage, int subPage, int totalPages);
 
 #endif

@@ -133,40 +133,24 @@ void drawWifiInfoPage() {
     display.nextPage();
 }
 
-void drawLongTextPage(int subPage) {
+void drawLongTextPage(const String& content, const String& title, int parentPage, int subPage, int totalPages) {
     display.fillScreen(GxEPD_WHITE);
     
     // Header
     u8g2Fonts.setFont(u8g2_font_wqy16_t_gb2312);
     u8g2Fonts.setCursor(10, 30);
-    u8g2Fonts.print("长文本示例");
+    u8g2Fonts.print(title);
     
     // Draw divider
     display.drawFastHLine(0, 40, display.width(), GxEPD_BLACK);
     
-    // Example long text content (split into pages)
-    const char* longText[] = {
-        "第一页：这是一个非常长的文本示例，用来演示分页功能。"
-        "当文本内容超过一页显示范围时，系统会自动将内容分配到多个子页面中。"
-        "用户可以通过向上和向下的手势来浏览不同的子页面。",
-        
-        "第二页：这种分页设计让我们能够展示更多的内容，而不用担心屏幕空间的限制。"
-        "每个子页面都会显示页码信息，让用户知道当前的浏览位置。"
-        "这对于显示长篇文章或详细说明非常有用。",
-        
-        "第三页：这是最后一页了。这个示例展示了如何优雅地处理长文本内容。"
-        "通过这种方式，我们可以在有限的屏幕空间内展示无限的内容。"
-    };
-    
     // Display current page content
     u8g2Fonts.setFont(u8g2_font_wqy12_t_gb2312);
     display.setTextWrap(true);
-    String content = longText[subPage];
     
     // Word wrap and display text
     int y = 70;
     int lineStart = 0;
-    int lastSpace = 0;
     int maxWidth = display.width() - 40; // Leave margins
     String currentLine;
     
@@ -191,9 +175,16 @@ void drawLongTextPage(int subPage) {
     }
     
     // Draw page indicator
-    String pageIndicator = String(subPage + 1) + "/3";
+    String pageIndicator = String(subPage + 1) + "/" + String(totalPages);
     u8g2Fonts.setCursor(display.width() - 40, display.height() - 20);
     u8g2Fonts.print(pageIndicator);
+    
+    // Draw parent page number if provided
+    if (parentPage >= 0) {
+        String parentInfo = String(parentPage);
+        u8g2Fonts.setCursor(20, display.height() - 20);
+        u8g2Fonts.print(parentInfo);
+    }
     
     display.nextPage();
 }
